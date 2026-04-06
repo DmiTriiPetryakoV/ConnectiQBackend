@@ -57,9 +57,9 @@ class UserRegistration {
         if(!await bcrypt.compare(password , user.password)){
             throw new Error('login')
         }
-        if(!user.isActivated){
-            throw new Error('user doent activated account')
-        }
+      //  if(!user.isActivated){
+          //  throw new Error('user doent activated account')
+        //}
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto.id , tokens.refresh)
