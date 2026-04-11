@@ -24,7 +24,7 @@ class UserRegistration {
                 stack:stack,
                 name:name,
                     })
-                await mailService.sendActivationink(email ,`${process.env.API_URL}/api/activate/${activationLink}`)
+                await mailService.sendActivationLink(email ,`${process.env.API_URL}/api/activate/${activationLink}`)
                     const userDto = new UserDto(user)
                     const tokens = tokenService.generateTokens({...userDto})
                     tokenService.saveToken(userDto.id, tokens.refresh);
@@ -57,9 +57,9 @@ class UserRegistration {
         if(!await bcrypt.compare(password , user.password)){
             throw new Error('login')
         }
-      //  if(!user.isActivated){
-          //  throw new Error('user doent activated account')
-        //}
+       if(!user.isActivated){
+          throw new Error('user doent activated account')
+        }
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto.id , tokens.refresh)
@@ -73,7 +73,7 @@ class UserRegistration {
 
 async getUserById(id) {
     const user = await User.findById(id).lean();
-    if (!user) throw ApiError.BadRequest('Пользователь не найден');
+    if (!user) throw Error ('error');
     const posts = await Post.find({ author: id });
     const totalLikes = posts.reduce((sum, post) => sum + (post.likes || 0), 0);
 
